@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  tic_tac_toe:
+    build: tic_tac_toe/docker
+    tty: true
+    ports:
+      - '5000:5000'
+    volumes:
+      - './:/app/'
+    working_dir: '/app'
+    links:
+      - db_pgsql
+
+  db_pgsql:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: db
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5442:5432"
