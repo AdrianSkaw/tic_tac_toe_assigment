@@ -11,7 +11,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = 'dee46c10912e'
-down_revision = '9b60151cfe9c'
+down_revision = '2a2fc8f82651'
 branch_labels = None
 depends_on = None
 
@@ -22,6 +22,18 @@ def upgrade():
     connection = op.get_bind()
     metadata = sa.MetaData()
     metadata.reflect(bind=connection)
+
+    symbol_table = metadata.tables['symbol']
+
+    op.bulk_insert(
+        symbol_table,
+        [
+            {'symbol': 'X'},
+            {'symbol': 'O'},
+        ]
+    )
+
+
     player_table = metadata.tables['player']
 
     op.bulk_insert(
