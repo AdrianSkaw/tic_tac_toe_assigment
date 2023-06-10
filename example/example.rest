@@ -1,0 +1,22 @@
+POST http://127.0.0.1:5000/login
+Content-Type: application/json
+
+{
+
+    "id": "admin",
+     "password": "password"
+}
+
+###
+POST http://127.0.0.1:5000/
+
+
+###
+POST http://127.0.0.1:5000/api/new_session/player1
+
+###
+POST http://127.0.0.1:5000/api/new_session/player2
+
+
+###
+POST http://127.0.0.1:5000/api/add_credits/player1
