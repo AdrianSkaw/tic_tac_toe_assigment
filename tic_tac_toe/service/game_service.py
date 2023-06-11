@@ -2,8 +2,8 @@ from datetime import datetime
 
 from flask import jsonify
 
-from tic_tac_toe.models.player import Player
 from tic_tac_toe.models.game import Game
+from tic_tac_toe.models.player import Player
 from tic_tac_toe.repository.game_repository import GameRepository
 from tic_tac_toe.validator.game_service_validator import GameServiceValidator
 from tic_tac_toe.validator.validation_exception import ValidationException
@@ -20,7 +20,7 @@ class GameService:
         self.__current_player: Player = Player()
         self.__previous_player: Player = Player()
         self.__players_online: dict = {
-            'player1': {'online': False, 'new_session': False, credits: 0},
+            'player1': {'online': False, 'new_session': False, credits: 0}, #TODO prepare login module and registration
             'player2': {'online': False, 'new_session': False, credits: 0},
         }
         self.__game = None
@@ -35,11 +35,13 @@ class GameService:
         self.__players_online[player]['new_session'] = True
         self.__players_online[player]['online'] = True
         self.__players_online[player]['credits'] = self.__game_repository.get_credits(player)
-        return jsonify({'message': f'Nowa sesja gry dla: {player}. Liczba kredytów: {self.__players_online[player]["credits"]}'})
+        return jsonify(
+            {'message': f'Nowa sesja gry dla: {player}. Liczba kredytów: {self.__players_online[player]["credits"]}'})
 
     def start_game(self) -> jsonify:
+        #TODO ADD LOGIN MODULE AND CHECK TO ONLY 2 PLAYERS ONLINE
         if self.__game is None:
-            self.__game  = Game()
+            self.__game = Game()
             self.__start_game_time = datetime.now()
         if self.__players_online['player1']['online'] is False and self.__players_online['player2']['online'] is False:
             return self.__validation_exception.response(message='Nie ma dwóch graczy online')
@@ -54,9 +56,10 @@ class GameService:
 
         self.__current_player = self.__players[0]
 
-        return jsonify({'message': f'Nowa gra rozpoczęta, zaczyna {self.__current_player}'})
+        return jsonify({'message': f'Nowa gra rozpoczęta, zaczyna {self.__current_player.name}'})
 
     def add_credits(self, player: str) -> jsonify:
+
         self.__game_service_validator.player_exists(player)
         credits = self.__game_repository.check_credits(player)
 
@@ -67,10 +70,10 @@ class GameService:
         return self.__validation_exception.response('Nie można dodać kredytów, ponieważ sesja się nie zakończyła.')
 
     def make_move(self, player, request) -> jsonify:
+        self.__game_service_validator.validate_input_data(request)
         self.__game_service_validator.player_exists(player)
         if player != self.__current_player.name:
             return jsonify({'warning': 'Teraz nie twoja kolej'})
-
 
         row = int(request.json['row'])
         col = int(request.json['col'])
@@ -81,12 +84,12 @@ class GameService:
         symbol = self.__current_player.symbol
         self.__board[row][col] = symbol
 
-        if self.check_status(symbol)=='win':
+        if self.check_status(symbol) == 'win':
             self.__current_player.credits += 4
             self.__previous_player.credits -= 3
             self.end_game(winner=self.__current_player, game=self.__game, tie="no")
             return jsonify({'message': f'Gracz {player} wygrał!'})
-        if self.check_status(symbol)=='tie':
+        if self.check_status(symbol) == 'tie':
             self.__current_player.credits += -3
             self.__previous_player.credits += -3
             self.end_game(game=self.__game, tie="yes")

@@ -18,7 +18,6 @@ def create_app() -> Flask:
     container.config.github.auth_token.from_env("GITHUB_TOKEN")
 
     app = Flask(__name__)
-    # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://root:password@localhost:5442/db'
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://root:password@db_pgsql:5432/db'
     db.init_app(app)
     Migrate(app, db)

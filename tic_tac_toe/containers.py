@@ -25,14 +25,3 @@ class Container(containers.DeclarativeContainer):
         game_service_validator=game_service_validator,
 
     )
-
-    # github_client = providers.Factory(
-    #     Github,
-    #     login_or_token=config.github.auth_token,
-    #     timeout=config.github.request_timeout,
-    # )
-    #
-    # search_service = providers.Factory(
-    #     services.SearchService,
-    #     github_client=github_client,
-    # )

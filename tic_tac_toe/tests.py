@@ -4,7 +4,7 @@ import pytest
 
 from .application import create_app
 
-
+#TODO preapere tests in test_db
 @pytest.fixture
 def app():
     app = create_app()
