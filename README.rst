@@ -2,7 +2,8 @@ To run the docker container, execute the following command:
 
 .. code-block:: bash
 
-   docker-compose up -d
+    docker compose up --build
+
 
 To perform migrations, run the following command within the tic_tac_toe container:
 
