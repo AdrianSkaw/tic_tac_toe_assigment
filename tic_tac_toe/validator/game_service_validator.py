@@ -1,7 +1,7 @@
 from dependency_injector.wiring import Provide
 
-from repository.game_repository import GameRepository
-from validator.validation_exception import ValidationException
+from tic_tac_toe.repository.game_repository import GameRepository
+from tic_tac_toe.validator.validation_exception import ValidationException
 
 
 class GameServiceValidator:

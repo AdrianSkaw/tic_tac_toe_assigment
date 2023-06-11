@@ -2,11 +2,8 @@ from . import db
 
 class Game(db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
-    player_name = db.Column(db.String, db.ForeignKey('player.name'), nullable=False)
-    player = db.relationship('Player', backref=db.backref('games', lazy=True))
-    wins = db.Column(db.Integer, nullable=False)
-    losses = db.Column(db.Integer, nullable=False)
-    ties = db.Column(db.Integer, nullable=False)
+    wins = db.Column(db.String, db.ForeignKey('player.name'), nullable=False, default='No wins', )
+    ties = db.Column(db.String, nullable=False, default='No ties')
     duration = db.Column(db.Integer, nullable=False)
     
 

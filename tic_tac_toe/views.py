@@ -12,24 +12,14 @@ from .containers import Container
 
 
 
-# Inicjalizacja planszy
-board = [['', '', ''],
-         ['', '', ''],
-         ['', '', '']]
-
-current_player = 'player1'
-
-
-
-
 
 
 # Rozpoczęcie nowej sesji dla gracza
 def new_session(player: str, game_service: GameService = Provide[Container.game_service]):
     return game_service.new_session(player)
 
-def new_game(game_service: GameService = Provide[Container.game_service]):
-    return game_service.new_game()
+def start_game(game_service: GameService = Provide[Container.game_service]):
+    return game_service.start_game()
 
 # Dodanie kredytów do konta gracza
 def add_credits(player: str, game_service: GameService = Provide[Container.game_service]):
@@ -38,13 +28,13 @@ def add_credits(player: str, game_service: GameService = Provide[Container.game_
 
 
 # Wykonanie ruchu
-def make_move(game_service: GameService = Provide[Container.game_service]):
-    return game_service.make_move(request)
+def make_move(player: str, game_service: GameService = Provide[Container.game_service]):
+    return game_service.make_move(player, request)
 
 
 # Pobranie aktualnego stanu planszy
-def get_board():
-    return jsonify(board)
+def get_board(game_service: GameService = Provide[Container.game_service]):
+    return game_service.get_board()
 
 
 def get_credits(player: str, game_service: GameService = Provide[Container.game_service]):
@@ -56,3 +46,6 @@ def get_credits(player: str, game_service: GameService = Provide[Container.game_
 def end_session(player: str, game_service: GameService = Provide[Container.game_service]):
     return game_service.end_session(player)
 
+
+def get_stats(game_service: GameService = Provide[Container.game_service]):
+    return game_service.get_stats()

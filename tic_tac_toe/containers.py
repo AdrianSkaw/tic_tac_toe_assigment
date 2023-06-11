@@ -4,7 +4,7 @@ from dependency_injector import containers, providers
 
 from tic_tac_toe.repository.game_repository import GameRepository
 from tic_tac_toe.service.game_service import GameService
-from validator.game_service_validator import GameServiceValidator
+from tic_tac_toe.validator.game_service_validator import GameServiceValidator
 
 
 class Container(containers.DeclarativeContainer):

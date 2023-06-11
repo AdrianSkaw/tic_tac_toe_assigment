@@ -39,8 +39,8 @@ def upgrade():
     op.bulk_insert(
         player_table,
         [
-            {'name': 'player1', 'credits': 10, 'symbol': 'X'},
-            {'name': 'player2', 'credits': 10, 'symbol': 'O'},
+            {'name': 'player1', 'credits': 0, 'symbol': 'X'},
+            {'name': 'player2', 'credits': 0, 'symbol': 'O'},
         ]
     )
     # ### end Alembic commands ###
