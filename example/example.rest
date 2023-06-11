@@ -1,0 +1,65 @@
+###
+POST http://127.0.0.1:5000/api/new_session/player1
+
+###
+POST http://127.0.0.1:5000/api/new_session/player2
+
+
+###
+POST http://127.0.0.1:5000/api/add_credits/player1
+
+###
+POST http://127.0.0.1:5000/api/add_credits/player2
+
+###
+POST http://127.0.0.1:5000/api/start_game
+
+
+###
+GET http://127.0.0.1:5000/api/board
+
+
+###
+POST http://127.0.0.1:5000/api/move/player1
+content-type: application/json
+
+{
+    "col": 0,
+     "row": 0
+}
+
+###
+POST http://127.0.0.1:5000/api/move/player2
+content-type: application/json
+
+{
+    "col": 0,
+     "row": 1
+}
+
+###
+POST http://127.0.0.1:5000/api/move/player1
+content-type: application/json
+
+{
+    "col": 1,
+     "row": 0
+}
+
+###
+POST http://127.0.0.1:5000/api/move/player2
+content-type: application/json
+
+{
+    "col": 1,
+     "row": 1
+}
+
+###
+POST http://127.0.0.1:5000/api/move/player1
+content-type: application/json
+
+{
+    "col": 1,
+     "row": 2
+}

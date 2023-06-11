@@ -1,7 +1,9 @@
 from . import db
 class Player(db.Model):
-    id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
-    score = db.Column(db.Integer, nullable=False)
+    name = db.Column(db.String, primary_key=True, nullable=False, unique=True)
+    credits = db.Column(db.Integer, nullable=False)
+    symbol = db.Column(db.String, db.ForeignKey('symbol.symbol'), nullable=False, unique=True)
+
 
 
 
