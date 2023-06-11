@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask import jsonify
 
 from tic_tac_toe.models.player import Player
@@ -11,11 +13,12 @@ class GameService:
     def __init__(self, game_repository: GameRepository,
                  game_service_validator: GameServiceValidator
                  ):
+        self.__start_game_time = None
         self.__game_repository = game_repository
         self.__game_service_validator = game_service_validator
         self.__board: list = []
-        self.__current_player: str = ''
-        self.__previous_player: str = ''
+        self.__current_player: Player = Player()
+        self.__previous_player: Player = Player()
         self.__players_online: dict = {
             'player1': {'online': False, 'new_session': False, credits: 0},
             'player2': {'online': False, 'new_session': False, credits: 0},
@@ -37,6 +40,7 @@ class GameService:
     def start_game(self) -> jsonify:
         if self.__game is None:
             self.__game  = Game()
+            self.__start_game_time = datetime.now()
         if self.__players_online['player1']['online'] is False and self.__players_online['player2']['online'] is False:
             return self.__validation_exception.response(message='Nie ma dwóch graczy online')
         if self.__players_online['player1']['credits'] < 4 or self.__players_online['player2']['credits'] < 4:
@@ -123,10 +127,12 @@ class GameService:
     def end_session(self, player: str) -> jsonify:
         self.__game_service_validator.player_exists(player)
         self.__game_repository.end_session(self.__current_player)
+        self.__players_online[player]['online'] = False
         return jsonify({'message': f'Sesja gracza {player} zakończona'})
 
     def end_game(self, tie: str, game: Game, winner: Player = None, loser: Player = None) -> jsonify:
-        self.__game = self.__game_repository.end_game(winner, tie, game, loser)
+        duration = (datetime.now() - self.__start_game_time).total_seconds()
+        self.__game = self.__game_repository.end_game(winner, tie, game, loser, duration)
         return jsonify({'message': f'Gry zakończone'})
 
     def get_board(self):
