@@ -63,3 +63,6 @@ content-type: application/json
     "col": 1,
      "row": 2
 }
+###
+GET http://127.0.0.1:5000/api/get_stats
+content-type: application/json
