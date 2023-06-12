@@ -46,12 +46,13 @@ def test_make_move(app):
     with app.test_client() as client:
         client.post('/api/new_session/player1')
         client.post('/api/new_session/player2')
-        client.post('/api/start_game/')
-        client.post('/api/move/player1', json={'row': 0, 'col': 0})
-        client.post('/api/move/player2', json={'row': 1, 'col': 0})
-        client.post('/api/move/player1', json={'row': 0, 'col': 1})
-        client.post('/api/move/player2', json={'row': 1, 'col': 1})
-        response = client.post('/api/move/player1', json={'row': 0, 'col': 2})
+        response = client.post('/api/start_game/player1')
+        id = response.json['id']
+        client.post(f'/api/move/{id}/player1', json={'row': 0, 'col': 0})
+        client.post(f'/api/move/{id}/player2', json={'row': 1, 'col': 0})
+        client.post(f'/api/move/{id}/player1', json={'row': 0, 'col': 1})
+        client.post(f'/api/move/{id}/player2', json={'row': 1, 'col': 1})
+        response = client.post(f'/api/move/{id}/player1', json={'row': 0, 'col': 2})
         assert response.status_code == 200
         assert response.json == {'message': 'Gracz player1 wygrał!'}
 

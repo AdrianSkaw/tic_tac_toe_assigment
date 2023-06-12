@@ -12,7 +12,9 @@ POST http://127.0.0.1:5000/api/add_credits/player1
 POST http://127.0.0.1:5000/api/add_credits/player2
 
 ###
-POST http://127.0.0.1:5000/api/start_game
+POST http://127.0.0.1:5000/api/start_game/player1
+
+> {% client.global.set('id', response.body.id); %}
 
 
 ###
@@ -20,7 +22,7 @@ GET http://127.0.0.1:5000/api/board
 
 
 ###
-POST http://127.0.0.1:5000/api/move/player1
+POST http://127.0.0.1:5000/api/move/{{ id }}/player1
 content-type: application/json
 
 {
@@ -29,7 +31,7 @@ content-type: application/json
 }
 
 ###
-POST http://127.0.0.1:5000/api/move/player2
+POST http://127.0.0.1:5000/api/move/{{ id }}/player2
 content-type: application/json
 
 {
@@ -38,7 +40,7 @@ content-type: application/json
 }
 
 ###
-POST http://127.0.0.1:5000/api/move/player1
+POST http://127.0.0.1:5000/api/move/{{ id }}/player1
 content-type: application/json
 
 {
@@ -47,7 +49,7 @@ content-type: application/json
 }
 
 ###
-POST http://127.0.0.1:5000/api/move/player2
+POST http://127.0.0.1:5000/api/move/{{ id }}/player2
 content-type: application/json
 
 {
@@ -56,7 +58,7 @@ content-type: application/json
 }
 
 ###
-POST http://127.0.0.1:5000/api/move/player1
+POST http://127.0.0.1:5000/api/move/{{ id }}/player1
 content-type: application/json
 
 {
