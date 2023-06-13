@@ -23,7 +23,7 @@ def make_move(id: str, player: str, game_service: GameService = Provide[Containe
     return game_service.make_move(id, player, request)
 
 
-def get_board(id_, game_service: GameService = Provide[Container.game_service]):
+def get_board(id_: str, game_service: GameService = Provide[Container.game_service]):
     return game_service.get_board(id_)
 
 

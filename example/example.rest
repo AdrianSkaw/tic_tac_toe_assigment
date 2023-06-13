@@ -18,7 +18,7 @@ POST http://127.0.0.1:5000/api/start_game/player1
 
 
 ###
-GET http://127.0.0.1:5000/api/board
+GET http://127.0.0.1:5000/api/board/{{ id }}
 
 
 ###

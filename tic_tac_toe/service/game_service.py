@@ -58,7 +58,9 @@ class GameService:
 
         self.__get_players()
 
-        self.__current_player = self.__players[0]
+
+        self.__current_player = [player_ for player_ in self.__players if player_.name == player][0]
+
 
         return jsonify({'message': f'Nowa gra o numerze id {game_id} rozpoczęta, zaczyna {self.__current_player.name}',
                         'id': game_id
