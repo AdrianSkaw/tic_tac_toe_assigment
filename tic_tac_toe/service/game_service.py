@@ -89,20 +89,20 @@ class GameService:
             credits = self.__game_repository.add_credits(player, 10)
 
             return jsonify({'message': f'Gracz {player} posiada teraz {credits} kredytów'})
-        return self.__validation_exception.response('Nie można dodać kredytów, ponieważ sesja się nie zakończyła.')
+        return self.__validation_exception.response('Nie można dodać kredytów, ponieważ sesja się nie zakończyła.'), 400
 
     def make_move(self, id_, player, request) -> jsonify:
         id_ = int(id_)
         self.__game_service_validator.game_exists(id_, self.__game)
         if not self.__check_players_in_the_game(player, id_):
-            return self.__validation_exception.response('Nie możesz wykonać ruchu w tej grze')
+            return self.__validation_exception.response('Nie możesz wykonać ruchu w tej grze'), 400
         self.__game_service_validator.validate_input_data(request)
 
         for game in self.__game:
             if game['previous_player'] is None:
                 return jsonify({'warning': 'Nie ma jeszcze przeciwnika'})
             if player != game['current_player'].name:
-                return jsonify({'warning': 'Teraz nie twoja kolej'})
+                return jsonify({'warning': 'Teraz nie twoja kolej'}), 400
 
             row = int(request.json['row'])
             col = int(request.json['col'])
@@ -110,7 +110,7 @@ class GameService:
             if not game['id'] == id_:
                 continue
             if game['board'][row][col] != '':
-                return jsonify({'warning': 'To pole jest już zajęte'})
+                return jsonify({'warning': 'To pole jest już zajęte'}), 400
 
             symbol = game['current_player'].symbol
             game['board'][row][col] = symbol
@@ -153,7 +153,8 @@ class GameService:
             game['current_player'] = self.__players[1]
             game['previous_player'] = self.__players[2]
 
-    def __check_status(self, player: str, board) -> str:
+    @staticmethod
+    def __check_status(player: str, board) -> str:
         for i in range(3):
             if (board[i][0] == board[i][1] == board[i][2] == player) or \
                     (board[0][i] == board[1][i] == board[2][i] == player):
