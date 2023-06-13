@@ -16,6 +16,11 @@ POST http://127.0.0.1:5000/api/start_game/player1
 
 > {% client.global.set('id', response.body.id); %}
 
+###
+POST http://127.0.0.1:5000/api/start_game/player2
+
+
+
 
 ###
 GET http://127.0.0.1:5000/api/board/{{ id }}
@@ -64,6 +69,15 @@ content-type: application/json
 {
     "col": 1,
      "row": 2
+}
+
+###
+POST http://127.0.0.1:5000/api/move/{{ id }}/player2
+content-type: application/json
+
+{
+    "col": 2,
+     "row": 1
 }
 ###
 GET http://127.0.0.1:5000/api/get_stats

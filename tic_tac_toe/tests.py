@@ -47,6 +47,7 @@ def test_make_move(app):
         client.post('/api/new_session/player1')
         client.post('/api/new_session/player2')
         response = client.post('/api/start_game/player1')
+        response = client.post('/api/start_game/player2')
         id = response.json['id']
         client.post(f'/api/move/{id}/player1', json={'row': 0, 'col': 0})
         client.post(f'/api/move/{id}/player2', json={'row': 1, 'col': 0})
@@ -68,4 +69,12 @@ def test_add_credits(app):
 def test_get_stats(app):
     with app.test_client() as client:
         response = client.get('/api/get_stats')
+        assert response.status_code == 200
+
+
+def test_create_game(app):
+    with app.test_client() as client:
+        client.post('/api/new_session/player1')
+        response = client.post('/api/start_game/player1')
+        response = client.post('/api/start_game/player1')
         assert response.status_code == 200
