@@ -119,11 +119,11 @@ class GameService:
 
     def __set_current_player(self):
         if self.__current_player.name == 'player1':
-            self.__current_player = self.__players[1]
-            self.__previous_player = self.__players[0]
-        else:
-            self.__current_player = self.__players[0]
+            self.__current_player = self.__players[2]
             self.__previous_player = self.__players[1]
+        else:
+            self.__current_player = self.__players[1]
+            self.__previous_player = self.__players[2]
 
     def check_status(self, player: str, board) -> str:
         for i in range(3):
