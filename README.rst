@@ -2,7 +2,7 @@ To run the docker container, execute the following command:
 
 .. code-block:: bash
 
-    docker compose up --build -d
+    docker compose up --build
 
 
 To perform migrations, run the following command within the tic_tac_toe container:
@@ -10,6 +10,12 @@ To perform migrations, run the following command within the tic_tac_toe containe
 .. code-block:: bash
 
    docker compose exec tic_tac_toe bash run_migration.sh
+
+if need make migration after changes in models, run the following command within the tic_tac_toe container:
+
+.. code-block:: bash
+
+    docker compose exec tic_tac_toe flask db migrate
 
 For local execution, set the following environment variables:
 

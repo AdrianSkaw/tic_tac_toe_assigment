@@ -25,10 +25,10 @@ def create_app() -> Flask:
     login_manager.init_app(app)
     app.container = container
     app.add_url_rule('/api/new_session/<player>', 'new_session', views.new_session, methods=['POST'])
-    app.add_url_rule('/api/start_game/', 'start_game', views.start_game, methods=['POST'])
+    app.add_url_rule('/api/start_game/<player>', 'start_game', views.start_game, methods=['POST'])
     app.add_url_rule('/api/add_credits/<player>', 'add_credits', views.add_credits, methods=['POST'])
-    app.add_url_rule('/api/move/<player>', 'move', views.make_move, methods=['POST']),
-    app.add_url_rule('/api/board', 'board', views.get_board, methods=['GET'])
+    app.add_url_rule('/api/move/<id>/<player>', 'move', views.make_move, methods=['POST']),
+    app.add_url_rule('/api/board/<id_>', 'board', views.get_board, methods=['GET'])
     app.add_url_rule('/api/credits/<player>', 'credits', views.get_credits, methods=['GET'])
     app.add_url_rule('/api/end_session/<player>', 'end_session', views.end_session, methods=['POST'])
     app.add_url_rule('/api/get_stats', 'get_stats', views.get_stats, methods=['GET'])

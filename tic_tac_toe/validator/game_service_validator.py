@@ -28,4 +28,11 @@ class GameServiceValidator:
         if request.json['row'] < 0 or request.json['row'] > 2 or request.json['col'] < 0 or request.json['col'] > 2:
             abort(400, description="Invalid request data. 'row' and 'col' values must be in range [0, 2].")
 
+    @staticmethod
+    def game_exists(id, games: list):
+        for game in games:
+            if game.get('id') == id:
+                return True
+        ValidationException.response(message="Game does not exist")
+
 

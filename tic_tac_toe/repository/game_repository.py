@@ -30,11 +30,10 @@ class GameRepository:
         player = Player.query.filter(Player.name == player).first()
         return player.symbol
 
-    def end_game(self, winner: Player, tie: str, game: Game, loser: Player, duration) -> None:
+    def end_game(self, winner: Player, tie: str, game: Game, loser: Player, duration):
         new_game = Game(wins=winner.name, ties=tie, duration=duration)
         db.session.add(new_game)
         db.session.commit()
-        return None
 
     def add_credits(self, player_name, amount):
         player = Player.query.filter(Player.name == player_name).first()
@@ -53,3 +52,8 @@ class GameRepository:
             }
 
         return output
+
+    def add_game(self, game):
+        db.session.add(game)
+        db.session.commit()
+        return game.id
