@@ -115,33 +115,33 @@ class GameService:
             symbol = game['current_player'].symbol
             game['board'][row][col] = symbol
 
-            status = self.check_status(symbol, game['board'])
+            status = self.__check_status(symbol, game['board'])
             if status == 'win':
-                self.handle_win(player, game)
+                self.__handle_win(player, game)
                 return jsonify({'message': f'Gracz {player} wygrał!'})
             elif status == 'tie':
-                self.handle_tie(game)
+                self.__handle_tie(game)
                 return jsonify({'message': f'Gra zakończona remisem'})
 
             credits = game['current_player'].credits
             if credits <= 0:
-                self.handle_loss(player, game, credits)
+                self.__handle_loss(player, game, credits)
                 return jsonify({'message': f'Gracz {player} przegrał i kończy grę. Liczba kredytów: {credits}'})
 
             self.__set_current_player(game)
             return jsonify({'message': 'Ruch wykonany'})
 
-    def handle_win(self, player, game):
+    def __handle_win(self, player, game):
         game['current_player'].credits += 4
         game['previous_player'].credits -= 3
         self.end_game(winner=game['current_player'], game=game, tie="no")
 
-    def handle_tie(self, game):
+    def __handle_tie(self, game):
         game['current_player'].credits += -3
         game['previous_player'].credits += -3
         self.end_game(game=game, tie="yes")
 
-    def handle_loss(self, player, game, credits):
+    def __handle_loss(self, player, game, credits):
         self.end_session(player)
         return jsonify({'message': f'Gracz {player} przegrał i kończy grę. Liczba kredytów: {credits}'})
 
@@ -153,7 +153,7 @@ class GameService:
             game['current_player'] = self.__players[1]
             game['previous_player'] = self.__players[2]
 
-    def check_status(self, player: str, board) -> str:
+    def __check_status(self, player: str, board) -> str:
         for i in range(3):
             if (board[i][0] == board[i][1] == board[i][2] == player) or \
                     (board[0][i] == board[1][i] == board[2][i] == player):
