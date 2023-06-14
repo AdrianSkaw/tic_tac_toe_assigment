@@ -21,7 +21,6 @@ class GameService:
         self.__players_online: dict = {
         }
         self.__game = []
-        self.__validation_exception = ValidationException()
 
     def __get_players(self):
         players = self.__game_repository.get_players()
@@ -35,20 +34,17 @@ class GameService:
         return jsonify(
             {'message': f'Nowa sesja gry dla: {player}. Liczba kredytów: {self.__players_online[player]["credits"]}'})
 
-    def __check_game_to_join(self, player) -> bool:
+    def __check_game_to_join(self, player: str) -> bool:
         for game in self.__game:
             if game['previous_player'] is None and game['current_player'].name != player:
                 return True
         return False
 
-    def __check_credits_to_join(self, player):
-        if self.__players_online[player]['credits'] < 4:
-            return self.__validation_exception.response(message='Za mało kredytów, doładuj konto')
 
-    def start_game(self, player) -> jsonify:
+    def start_game(self, player: str) -> jsonify:
         self.__game_service_validator.player_exists(player)
         self.__get_players()
-        self.__check_credits_to_join(player)
+        self.__game_service_validator.check_credits_to_join(player, self.__players_online)
 
         if self.__check_game_to_join(player):
             for game in self.__game:
@@ -89,13 +85,12 @@ class GameService:
             credits = self.__game_repository.add_credits(player, 10)
 
             return jsonify({'message': f'Gracz {player} posiada teraz {credits} kredytów'})
-        return self.__validation_exception.response('Nie można dodać kredytów, ponieważ sesja się nie zakończyła.'), 400
+        raise ValidationException('Nie można dodać kredytów, ponieważ sesja się nie zakończyła.')
 
-    def make_move(self, id_, player, request) -> jsonify:
+    def make_move(self, id_, player: str, request) -> jsonify:
         id_ = int(id_)
         self.__game_service_validator.game_exists(id_, self.__game)
-        if not self.__check_players_in_the_game(player, id_):
-            return self.__validation_exception.response('Nie możesz wykonać ruchu w tej grze'), 400
+        self.__game_service_validator.check_players_in_the_game(player, id_, self.__game)
         self.__game_service_validator.validate_input_data(request)
 
         for game in self.__game:
@@ -117,7 +112,7 @@ class GameService:
 
             status = self.__check_status(symbol, game['board'])
             if status == 'win':
-                self.__handle_win(player, game)
+                self.__handle_win(game)
                 return jsonify({'message': f'Gracz {player} wygrał!'})
             elif status == 'tie':
                 self.__handle_tie(game)
@@ -125,27 +120,27 @@ class GameService:
 
             credits = game['current_player'].credits
             if credits <= 0:
-                self.__handle_loss(player, game, credits)
+                self.__handle_loss(player, credits)
                 return jsonify({'message': f'Gracz {player} przegrał i kończy grę. Liczba kredytów: {credits}'})
 
             self.__set_current_player(game)
             return jsonify({'message': 'Ruch wykonany'})
 
-    def __handle_win(self, player, game):
+    def __handle_win(self, game: dict):
         game['current_player'].credits += 4
         game['previous_player'].credits -= 3
         self.end_game(winner=game['current_player'], game=game, tie="no")
 
-    def __handle_tie(self, game):
+    def __handle_tie(self, game: dict):
         game['current_player'].credits += -3
         game['previous_player'].credits += -3
         self.end_game(game=game, tie="yes")
 
-    def __handle_loss(self, player, game, credits):
+    def __handle_loss(self, player: str, credits):
         self.end_session(player)
         return jsonify({'message': f'Gracz {player} przegrał i kończy grę. Liczba kredytów: {credits}'})
 
-    def __set_current_player(self, game):
+    def __set_current_player(self, game: dict):
         if game['current_player'].name == 'player1':
             game['current_player'] = self.__players[2]
             game['previous_player'] = self.__players[1]
@@ -154,7 +149,7 @@ class GameService:
             game['previous_player'] = self.__players[2]
 
     @staticmethod
-    def __check_status(player: str, board) -> str:
+    def __check_status(player: str, board: list) -> str:
         for i in range(3):
             if (board[i][0] == board[i][1] == board[i][2] == player) or \
                     (board[0][i] == board[1][i] == board[2][i] == player):
@@ -193,10 +188,4 @@ class GameService:
     def get_stats(self):
         return jsonify({'stats': self.__game_repository.get_stats()})
 
-    def __check_players_in_the_game(self, player, id) -> bool:
-        for game in self.__game:
-            if game['id'] == id:
-                if player == game['current_player'].name or player == game['previous_player'].name:
-                    return True
-                else:
-                    return False
+

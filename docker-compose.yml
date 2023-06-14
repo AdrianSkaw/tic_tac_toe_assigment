@@ -5,7 +5,7 @@ services:
     build: tic_tac_toe/docker
     tty: true
     ports:
-      - '5000:5000'
+      - '8000:8000'
     volumes:
       - './:/app/'
     working_dir: '/app'
