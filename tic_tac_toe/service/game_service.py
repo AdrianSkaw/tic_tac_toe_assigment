@@ -40,7 +40,6 @@ class GameService:
                 return True
         return False
 
-
     def start_game(self, player: str) -> jsonify:
         self.__game_service_validator.player_exists(player)
         self.__get_players()
@@ -62,6 +61,7 @@ class GameService:
 
         current_player = [player_ for player_ in self.__players if player_.name == player][0]
         game_id = self.__game_repository.add_game(game)
+
         board = [['', '', ''],
                  ['', '', ''],
                  ['', '', '']]
@@ -187,5 +187,3 @@ class GameService:
 
     def get_stats(self):
         return jsonify({'stats': self.__game_repository.get_stats()})
-
-

@@ -5,43 +5,51 @@ from tic_tac_toe.models.player import Player
 
 class GameRepository:
 
-    def get_players(self):
+    @staticmethod
+    def get_players():
         players = Player.query.all()
-        # output = [player.name for player in players]
         return players
 
-    def get_players_names(self, players):
+    @staticmethod
+    def get_players_names(players):
         output = [player.name for player in players]
         return output
 
-    def check_credits(self, player_name):
+    @staticmethod
+    def check_credits(player_name):
         player = Player.query.filter(Player.name == player_name).first()
         return player.credits
 
-    def get_credits(self, player):
+    @staticmethod
+    def get_credits(player):
         player = Player.query.filter(Player.name == player).first()
         return player.credits
 
-    def end_session(self, player):
+    @staticmethod
+    def end_session(player):
         db.session.commit()
         return True
 
-    def get_symbol(self, player):
+    @staticmethod
+    def get_symbol(player):
         player = Player.query.filter(Player.name == player).first()
         return player.symbol
 
-    def end_game(self, winner: Player, tie: str, game: Game, loser: Player, duration):
+    @staticmethod
+    def end_game(winner: Player, tie: str, game: Game, loser: Player, duration):
         new_game = Game(wins=winner.name, ties=tie, duration=duration)
         db.session.add(new_game)
         db.session.commit()
 
-    def add_credits(self, player_name, amount):
+    @staticmethod
+    def add_credits(player_name: str, amount: int) -> int:
         player = Player.query.filter(Player.name == player_name).first()
         player.credits += amount
         db.session.commit()
         return player.credits
 
-    def get_stats(self):
+    @staticmethod
+    def get_stats():
         games = Game.query.all()
         output = {}
         for game in games:
@@ -53,7 +61,8 @@ class GameRepository:
 
         return output
 
-    def add_game(self, game):
+    @staticmethod
+    def add_game(game: Game) -> int:
         db.session.add(game)
         db.session.commit()
         return game.id
