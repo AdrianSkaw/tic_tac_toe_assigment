@@ -27,7 +27,7 @@ To play the game, follow these steps:
 
     POST http://127.0.0.1:8000/api/new_session/player2
 
-   Players start with zero credits on the first run. To increase their credits, use the following requests:
+Players start with zero credits on the first run. To increase their credits, use the following requests:
 
 .. code-block:: http
 
