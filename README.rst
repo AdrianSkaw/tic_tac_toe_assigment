@@ -90,3 +90,7 @@ To ensure that both players are in the same game, the "start_game" command needs
 
 
 Currently, it shows all the data in the database, but a filter will be added in the future to allow filtering by date, for example.
+
+PS. If you want you can test game with:
+
+     example/example.rest 
