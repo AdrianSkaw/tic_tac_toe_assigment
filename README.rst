@@ -45,11 +45,13 @@ Players start with zero credits on the first run. To increase their credits, use
 
     > {% client.global.set('id', response.body.id); %}
 
+
 .. code-block:: http
 
     POST http://127.0.0.1:8000/api/start_game/player2
 
-   To ensure that both players are in the same game, the "start_game" command needs to be executed for each player. The response to this command will contain the game ID, which will be needed to make moves.
+
+To ensure that both players are in the same game, the "start_game" command needs to be executed for each player. The response to this command will contain the game ID, which will be needed to make moves.
 
 3. To check the current state of the board, use the following request:
 
@@ -86,4 +88,5 @@ Players start with zero credits on the first run. To increase their credits, use
     GET http://127.0.0.1:8000/api/get_stats
     Content-Type: application/json
 
-   Currently, it shows all the data in the database, but a filter will be added in the future to allow filtering by date, for example.
+
+Currently, it shows all the data in the database, but a filter will be added in the future to allow filtering by date, for example.
