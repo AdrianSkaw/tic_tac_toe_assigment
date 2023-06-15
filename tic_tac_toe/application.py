@@ -5,7 +5,7 @@ from flask_bootstrap import Bootstrap
 from flask_login import LoginManager
 from flask_migrate import Migrate
 
-from tic_tac_toe import views
+from tic_tac_toe import controller
 from tic_tac_toe.containers import Container
 from tic_tac_toe.models.player import Player
 from tic_tac_toe.models.game import Game
@@ -16,7 +16,6 @@ from tic_tac_toe.validator.validation_exception import ValidationException
 
 def create_app() -> Flask:
     container = Container()
-    container.config.github.auth_token.from_env("GITHUB_TOKEN")
 
     app = Flask(__name__)
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://root:password@db_pgsql:5432/db'
@@ -25,20 +24,23 @@ def create_app() -> Flask:
     login_manager = LoginManager()
     login_manager.init_app(app)
     app.container = container
-    app.add_url_rule('/api/new_session/<player>', 'new_session', views.new_session, methods=['POST'])
-    app.add_url_rule('/api/start_game/<player>', 'start_game', views.start_game, methods=['POST'])
-    app.add_url_rule('/api/add_credits/<player>', 'add_credits', views.add_credits, methods=['POST'])
-    app.add_url_rule('/api/move/<id>/<player>', 'move', views.make_move, methods=['POST']),
-    app.add_url_rule('/api/board/<id_>', 'board', views.get_board, methods=['GET'])
-    app.add_url_rule('/api/credits/<player>', 'credits', views.get_credits, methods=['GET'])
-    app.add_url_rule('/api/end_session/<player>', 'end_session', views.end_session, methods=['POST'])
-    app.add_url_rule('/api/get_stats', 'get_stats', views.get_stats, methods=['GET'])
+    app.add_url_rule('/api/new_session/<player>', 'new_session', controller.new_session, methods=['POST'])
+    app.add_url_rule('/api/start_game/<player>', 'start_game', controller.start_game, methods=['POST'])
+    app.add_url_rule('/api/add_credits/<player>', 'add_credits', controller.add_credits, methods=['POST'])
+    app.add_url_rule('/api/move/<id>/<player>', 'move', controller.make_move, methods=['POST']),
+    app.add_url_rule('/api/board/<id_>', 'board', controller.get_board, methods=['GET'])
+    app.add_url_rule('/api/credits/<player>', 'credits', controller.get_credits, methods=['GET'])
+    app.add_url_rule('/api/end_session/<player>', 'end_session', controller.end_session, methods=['POST'])
+    app.add_url_rule('/api/get_stats', 'get_stats', controller.get_stats, methods=['GET'])
     bootstrap = Bootstrap()
     bootstrap.init_app(app)
 
     return app
 
+
 app = create_app()
+
+
 @app.errorhandler(400)
 def handle_bad_request(error):
     response = {
@@ -46,6 +48,7 @@ def handle_bad_request(error):
         'status_code': 400
     }
     return response, 400
+
 
 @app.errorhandler(ValidationException)
 def handle_validation_exception(error):
