@@ -40,21 +40,14 @@ class GameService:
                 return True
         return False
 
-    def start_game(self, player: str) -> jsonify:
-        self.__game_service_validator.player_exists(player)
-        self.__get_players()
-        self.__game_service_validator.check_credits_to_join(player, self.__players_online)
+    def __join_to_game(self, player: str, game) -> jsonify:
+        game['previous_player'] = [player_ for player_ in self.__players if player_.name == player][0]
+        return jsonify(
+            {'message': f'Gra o numerze id {game["id"]} rozpoczęta, grasz z  {game["current_player"].name}',
+             'id': game["id"]
+             })
 
-        if self.__check_game_to_join(player):
-            for game in self.__game:
-                if game['previous_player'] is None:
-                    game['previous_player'] = [player_ for player_ in self.__players if player_.name == player][0]
-                    return jsonify(
-                        {'message': f'Gra o numerze id {game["id"]} rozpoczęta, grasz z  {game["current_player"].name}',
-                         'id': game["id"]
-                         })
-
-        self.__game_service_validator.player_exists(player)
+    def __create_new_game(self, player: str) -> jsonify:
         game = Game()
         self.__start_game_time = datetime.now()
         game.wins = 'admin'
@@ -76,6 +69,17 @@ class GameService:
                         'id': game_id
                         })
 
+    def start_game(self, player: str) -> jsonify:
+        self.__game_service_validator.player_exists(player)
+        self.__get_players()
+        self.__game_service_validator.check_credits_to_join(player, self.__players_online)
+
+        if self.__check_game_to_join(player):
+            for game in self.__game:
+                if game['previous_player'] is None:
+                    self.__join_to_game(player, game)
+        return self.__create_new_game(player)
+
     def add_credits(self, player: str) -> jsonify:
 
         self.__game_service_validator.player_exists(player)
@@ -87,11 +91,7 @@ class GameService:
             return jsonify({'message': f'Gracz {player} posiada teraz {credits} kredytów'})
         raise ValidationException('Nie można dodać kredytów, ponieważ sesja się nie zakończyła.')
 
-    def make_move(self, id_, player: str, request) -> jsonify:
-        id_ = int(id_)
-        self.__game_service_validator.game_exists(id_, self.__game)
-        self.__game_service_validator.check_players_in_the_game(player, id_, self.__game)
-        self.__game_service_validator.validate_input_data(request)
+    def __play_game(self, player: str, id_: int, request) -> jsonify:
 
         for game in self.__game:
             if game['previous_player'] is None:
@@ -125,6 +125,14 @@ class GameService:
 
             self.__swap_players(game)
             return jsonify({'message': 'Ruch wykonany'})
+
+    def make_move(self, id_, player: str, request) -> jsonify:
+        id_ = int(id_)
+        self.__game_service_validator.game_exists(id_, self.__game)
+        self.__game_service_validator.check_players_in_the_game(player, id_, self.__game)
+        self.__game_service_validator.validate_input_data(request)
+        return self.__play_game(player, id_, request)
+
 
     def __handle_win(self, game: dict):
         game['current_player'].credits += 4
