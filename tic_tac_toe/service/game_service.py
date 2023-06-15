@@ -40,7 +40,6 @@ class GameService:
                 return True
         return False
 
-
     def start_game(self, player: str) -> jsonify:
         self.__game_service_validator.player_exists(player)
         self.__get_players()
@@ -62,6 +61,7 @@ class GameService:
 
         current_player = [player_ for player_ in self.__players if player_.name == player][0]
         game_id = self.__game_repository.add_game(game)
+
         board = [['', '', ''],
                  ['', '', ''],
                  ['', '', '']]
@@ -123,7 +123,7 @@ class GameService:
                 self.__handle_loss(player, credits)
                 return jsonify({'message': f'Gracz {player} przegrał i kończy grę. Liczba kredytów: {credits}'})
 
-            self.__set_current_player(game)
+            self.__swap_players(game)
             return jsonify({'message': 'Ruch wykonany'})
 
     def __handle_win(self, game: dict):
@@ -140,13 +140,11 @@ class GameService:
         self.end_session(player)
         return jsonify({'message': f'Gracz {player} przegrał i kończy grę. Liczba kredytów: {credits}'})
 
-    def __set_current_player(self, game: dict):
-        if game['current_player'].name == 'player1':
-            game['current_player'] = self.__players[2]
-            game['previous_player'] = self.__players[1]
-        else:
-            game['current_player'] = self.__players[1]
-            game['previous_player'] = self.__players[2]
+    @staticmethod
+    def __swap_players(game: dict):
+        temp = game['current_player']
+        game['current_player'] = game['previous_player']
+        game['previous_player'] = temp
 
     @staticmethod
     def __check_status(player: str, board: list) -> str:
@@ -187,5 +185,3 @@ class GameService:
 
     def get_stats(self):
         return jsonify({'stats': self.__game_repository.get_stats()})
-
-
