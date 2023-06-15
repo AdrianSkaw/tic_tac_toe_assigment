@@ -123,7 +123,7 @@ class GameService:
                 self.__handle_loss(player, credits)
                 return jsonify({'message': f'Gracz {player} przegrał i kończy grę. Liczba kredytów: {credits}'})
 
-            self.__set_current_player(game)
+            self.__swap_players(game)
             return jsonify({'message': 'Ruch wykonany'})
 
     def __handle_win(self, game: dict):
@@ -140,13 +140,11 @@ class GameService:
         self.end_session(player)
         return jsonify({'message': f'Gracz {player} przegrał i kończy grę. Liczba kredytów: {credits}'})
 
-    def __set_current_player(self, game: dict):
-        if game['current_player'].name == 'player1':
-            game['current_player'] = self.__players[2]
-            game['previous_player'] = self.__players[1]
-        else:
-            game['current_player'] = self.__players[1]
-            game['previous_player'] = self.__players[2]
+    @staticmethod
+    def __swap_players(game: dict):
+        temp = game['current_player']
+        game['current_player'] = game['previous_player']
+        game['previous_player'] = temp
 
     @staticmethod
     def __check_status(player: str, board: list) -> str:
