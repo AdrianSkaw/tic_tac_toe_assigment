@@ -1,4 +1,4 @@
-"""Views module."""
+"""Controller module."""
 
 from dependency_injector.wiring import Provide
 from flask import request

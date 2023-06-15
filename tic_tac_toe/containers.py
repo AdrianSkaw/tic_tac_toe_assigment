@@ -9,9 +9,7 @@ from tic_tac_toe.validator.game_service_validator import GameServiceValidator
 
 class Container(containers.DeclarativeContainer):
 
-    wiring_config = containers.WiringConfiguration(modules=[".views"])
-
-    config = providers.Configuration(yaml_files=["config.yml"])
+    wiring_config = containers.WiringConfiguration(modules=[".controller"])
 
     game_repository = providers.Singleton(
         GameRepository)
