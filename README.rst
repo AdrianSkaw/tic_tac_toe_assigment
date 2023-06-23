@@ -7,7 +7,7 @@ This program allows you to play the popular game Tic Tac Toe. It doesn't have a 
 
     docker-compose up --build
 
-The service should start running, but for full functionality, a database is required. To start the database, run the following command:
+The service should start running, but if you want to run manually migrations run the following command:
 
 .. code-block:: bash
 
